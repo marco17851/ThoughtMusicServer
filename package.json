@@ -1,0 +1,19 @@
+{
+  "name": "thoughtmusicserver",
+  "version": "1.0.0",
+  "description": "RESTful thoughtmusicserver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "marco barragan",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "mongoose": "^4.11.7"
+  }
+}

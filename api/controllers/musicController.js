@@ -2,12 +2,26 @@
 
 
 var mongoose = require('mongoose'),
+  Albums = mongoose.model('Albums'),
+  Artists = mongoose.model('Artists'),
   Genres = mongoose.model('Genres'),
   Songs = mongoose.model('Songs');
 
 exports.get_all_from_tag = function(req, res) {
-	if (req.params.tag_id == 2){
-		Genres.find({}, function(err, genre) {
+	if (req.params.tag_id == 0){
+		Albums.find({}).sort('name').exec(function(err, album) {
+	    if (err)
+	      res.send(err);
+	    res.json(album);
+		});
+	} else if (req.params.tag_id == 1){
+		Artists.find({}).sort('name').exec(function(err, artist) {
+	    if (err)
+	      res.send(err);
+	    res.json(artist);
+		});
+	} else if (req.params.tag_id == 2){
+		Genres.find({}).sort('name').exec(function(err, genre) {
 	    if (err)
 	      res.send(err);
 	    res.json(genre);
@@ -31,18 +45,56 @@ exports.get_all_from_tag = function(req, res) {
   
 // };
 
-// exports.update_song_ids = function(req, res){
-// 	if (req.params.tag_id == 2){
-// 		Genres.findOneAndUpdate({id: req.params.genre_id}, req.body, {new:true}, function(err, genre){
-// 		if (err)
-// 	      res.send(err);
-// 	    res.json(genre);
-// 		});
-// 	}
-// };
+exports.update_song_ids = function(req, res){
+	if (req.params.tag_id == 0){
+		Albums.findOneAndUpdate({id: req.params.id}, req.body, {new:true}, function(err, album){
+		if (err)
+	      res.send(err);
+	    res.json(album);
+		});
+	} else if (req.params.tag_id == 1){
+		Artists.findOneAndUpdate({id: req.params.genre_id}, req.body, {new:true}, function(err, genre){
+		if (err)
+	      res.send(err);
+	    res.json(genre);
+		});
+	}
+};
+
+exports.update_song_info = function(req, res){
+	Songs.findOneAndUpdate({id: req.params.id}, req.body, {new:true}, function(err, song){
+		if (err)
+			res.send(err);
+		res.json(song);
+	});
+}
+
+exports.delete_artist = function(req, res){
+	if (req.params.tag_id == 1){
+		Artists.remove({id: req.params.genre_id}, function(err, genre){
+		if (err)
+	      res.send(err);
+	    res.json(genre);
+		});
+	}
+};
 
 exports.post_new_category = function(req, res) {
-	if (req.params.tag_id == 2){
+	if (req.params.tag_id == 0){
+		var new_album = new Albums(req.body);
+		new_album.save(function(err, album){
+			if (err)
+				res.send(err);
+			res.json(album);
+		});
+	} else if (req.params.tag_id == 1){
+		var new_artist = new Artists(req.body);
+		new_artist.save(function(err, artist){
+			if (err)
+				res.send(err);
+			res.json(artist);
+		});
+	} else if (req.params.tag_id == 2){
 		var new_genre = new Genres(req.body);
 		new_genre.save(function(err, genre){
 			if (err)
@@ -59,7 +111,7 @@ exports.get_songs = function(req, res){
   	console.log("id:" + song_id);
 
   	if (song_id != null){
-  		Songs.find({id: song_id}, function(err, song){
+  		Songs.find({id: song_id}).sort('name').exec(function(err, song){
 			res.json(song);
   		});
   	} else {
